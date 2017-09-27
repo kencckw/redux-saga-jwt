@@ -1,0 +1,69 @@
+{
+    "name": "redux-saga-jwt",
+    "version": "0.0.1",
+    "description": "Token management for single page application",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kencckw/redux-saga-jwt.git"
+    },
+    "bugs": {
+        "url": "https://github.com/kencckw/redux-saga-jwt/issues"
+    },
+    "homepage": "https://github.com/kencckw/redux-saga-jwt",
+    "scripts": {
+        "test": "jest",
+        "test:cover": "jest --coverage",
+        "coveralls": "cat ./coverage/lcov.info | coveralls",
+        "lint": "tslint {src}/**/*.{ts,tsx}",
+        "build": "rm -Rf ./dist && tsc && cp -rf package.json ./dist"
+    },
+    "keywords": [
+        "typescript",
+        "npm",
+        "redux",
+        "react",
+        "react-native",
+        "redux-saga"
+    ],
+    "author": "Ken Cheng",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^20.0.5",
+        "@types/node": "^8.0.19",
+        "coveralls": "^2.13.1",
+        "dot-json": "^1.0.3",
+        "jest": "^20.0.4",
+        "ts-jest": "^20.0.7",
+        "tslint": "^5.5.0",
+        "typescript": "^2.4.2",
+        "tslint-react": "^3.0.0",
+        "tslint-react-recommended": "^1.0.5"
+    },
+    "jest": {
+        "transform": {
+            ".*": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "/src/.*__tests__/.*\\.(ts|tsx)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "json"
+        ],
+        "collectCoverage": true,
+        "coveragePathIgnorePatterns": [
+            "/node_modules/",
+            "/.*__tests__/.*\\.(ts|tsx)$"
+        ],
+        "mapCoverage": true
+    },
+    "dependencies": {
+        "localStorage": "^1.0.3",
+        "lodash": "^4.17.4",
+        "redux": "^3.7.2",
+        "redux-saga": "^0.15.6",
+        "redux-saga-api-call": "0.0.5"
+    }
+}
