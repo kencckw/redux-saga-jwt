@@ -21,4 +21,4 @@ deployment:
     commands:
       - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - $(yarn bin)/dot-json package.json version ${CIRCLE_TAG:1}
-      - npm publish
+      - cd dist && npm publish
