@@ -71,7 +71,7 @@ function* loginSaga() {
         expires_in: 3600; // unit: second
         last_updated: new Date().valueOf(); // timestamp
     };
-    yield put(siteOneAction.setToken(tokenObject);
+    yield put(siteOneAction.setToken(tokenObject));
 }
 ```
 2. Listen to ON_TOKEN_EXPIRED action and refresh your token.  
@@ -98,7 +98,7 @@ function refreshToken(action) {
         expires_in: 3600;
         last_updated: new Date().valueOf(); // timestamp
     };
-    yield put(siteOneAction.setToken(newToken);
+    yield put(siteOneAction.setToken(newToken));
 }
 ```
 3. Delete your token when log out
