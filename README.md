@@ -74,8 +74,8 @@ function* loginSaga() {
     yield put(siteOneAction.setToken(tokenObject);
 }
 ```
-2. Redux-saga-jwt will load the token from StorageService and check the token status on application start 
-You can listen to ON_TOKEN_EXPIRED action and refresh your token
+2. Listen to ON_TOKEN_EXPIRED action and refresh your token.  
+> Redux-saga-jwt will load the token from StorageService and check the token status on application start.
 ```
 import createAction, { ON_TOKEN_EXPIRED } from "redux-saga-jwt/actions";
 import { put, call, takeEvery } from "redux-saga/effects";
@@ -108,6 +108,7 @@ const siteOneAction = createAction("siteOne");
 yield put(siteOneAction.deleteToken());
 ```
 4. Use isTokenExpired to check your token status
+```
 import createSelector from "redux-saga-jwt/selectors";
 const siteOneSelector = createSelector("siteOne");
 
@@ -116,3 +117,4 @@ function mapStateToProps(state) {
       isAuthenticated: siteOneSelector.isTokenExpired(state),
     };
 }
+```
