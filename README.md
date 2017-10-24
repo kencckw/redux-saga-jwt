@@ -84,7 +84,7 @@ const siteOneAction = createAction("siteOne");
 function* refreshTokenListener() {
   yield takeEvery(ON_TOKEN_EXPIRED, refreshToken);
 }
-function refreshToken(action) {
+function* refreshToken(action) {
     const { id, token } = action.payload; // id="siteOne", access_token="abc", refresh_token="def"
     // const newToken = yield call(yourRefreshTokenApi, token.refresh_token)
     // if (newToken === null) { // if refresh token failure, force user to login again.
@@ -114,7 +114,7 @@ const siteOneSelector = createSelector("siteOne");
 
 function mapStateToProps(state) {
     return {
-      isAuthenticated: siteOneSelector.isTokenExpired(state),
+        isAuthenticated: siteOneSelector.isTokenExpired(state),
     };
 }
 ```
