@@ -1,6 +1,6 @@
 {
     "name": "redux-saga-jwt",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Token management for single page application",
     "main": "./index.js",
     "types": "./index.d.ts",
@@ -17,7 +17,7 @@
         "test:cover": "jest --coverage",
         "coveralls": "cat ./coverage/lcov.info | coveralls",
         "lint": "tslint {src}/**/*.{ts,tsx}",
-        "build": "rm -Rf ./dist && tsc && cp -rf package.json ./dist"
+        "build": "rm -Rf ./dist && tsc && cp -rf package.json ./dist && cp -rf README.md ./dist"
     },
     "keywords": [
         "typescript",
