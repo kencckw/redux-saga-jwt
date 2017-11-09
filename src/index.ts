@@ -39,6 +39,7 @@ export const initialize = (storageService: IStorageService) => function* init() 
 export const updateToken = (storageService: IStorageService) => function* _updateToken(action: any): any {
     const { id } = action.payload;
     const tokens = yield select(jwtSelector);
+    console.log(tokens);
     yield call(storageService.setToken, tokens);
     if (action.type === SET_TOKEN) {
         yield put(actions(id).startCountdownTimer(action.payload.token.expires_in));
@@ -49,9 +50,9 @@ export const updateToken = (storageService: IStorageService) => function* _updat
 
 export const listenAction = (storageService: IStorageService) => function* _listenUpdateToken(): any {
     yield [
-        call(takeEvery, SET_TOKEN, updateToken(storageService)),
-        call(takeEvery, DELETE_TOKEN, updateToken(storageService)),
-        call(takeEvery, START_COUNTDOWN_TIMER, startCountdownTimer),
+        takeEvery(SET_TOKEN, updateToken(storageService)),
+        takeEvery(DELETE_TOKEN, updateToken(storageService)),
+        takeEvery(START_COUNTDOWN_TIMER, startCountdownTimer),
     ];
 };
 
