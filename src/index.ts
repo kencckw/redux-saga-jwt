@@ -39,7 +39,6 @@ export const initialize = (storageService: IStorageService) => function* init() 
 export const updateToken = (storageService: IStorageService) => function* _updateToken(action: any): any {
     const { id } = action.payload;
     const tokens = yield select(jwtSelector);
-    console.log(tokens);
     yield call(storageService.setToken, tokens);
     if (action.type === SET_TOKEN) {
         yield put(actions(id).startCountdownTimer(action.payload.token.expires_in));
