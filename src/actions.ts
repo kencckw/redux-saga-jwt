@@ -12,8 +12,8 @@ export const CANCEL_COUNTDOWN_TIMER = `${JWT}/CANCEL_COUNTDOWN_TIMER`;
 export const START_COUNTDOWN_TIMER = `${JWT}/START_COUNTDOWN_TIMER`;
 
 export default (id: string) => ({
-    setToken: (tokenObject: ITokenObject) => action(SET_TOKEN, { id, token: tokenObject }),
-    deleteToken: (): ISetTokenAction => action(DELETE_TOKEN, { id }),
+    setToken: (tokenObject: ITokenObject, saveToStorage: boolean = true) => action(SET_TOKEN, { id, token: tokenObject, saveToStorage }),
+    deleteToken: (deleteFromStorage: boolean = true): ISetTokenAction => action(DELETE_TOKEN, { id, deleteFromStorage }),
     onTokenExpired: (tokenObject: ITokenObject) => action(ON_TOKEN_EXPIRED, { id, token: tokenObject }),
     cancelCountdownTimer: () => action(CANCEL_COUNTDOWN_TIMER, { id }),
     startCountdownTimer: (expiresIn: number) => action(START_COUNTDOWN_TIMER, { id, expiresIn }),

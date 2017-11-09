@@ -29,30 +29,41 @@ export const initialize = (storageService: IStorageService) => function* init() 
     for (const id of Object.keys(tokens)) {
         const token: ITokenObject = tokens[id];
         if (!isTokenExpired(currentTimestamp, token.last_updated, token.expires_in)) {
-            yield put(actions(id).setToken(token)); // sync token into reducer
+            yield put(actions(id).setToken(token, false)); // sync token into reducer
         } else {
             yield put(actions(id).onTokenExpired(token));
         }
     }
 };
 
-export const updateToken = (storageService: IStorageService) => function* _updateToken(action: any): any {
-    const { id } = action.payload;
-    const tokens = yield select(jwtSelector);
-    yield call(storageService.setToken, tokens);
-    if (action.type === SET_TOKEN) {
-        yield put(actions(id).startCountdownTimer(action.payload.token.expires_in));
-        return;
-    }
-    yield put(actions(id).cancelCountdownTimer());
-};
-
 export const listenAction = (storageService: IStorageService) => function* _listenUpdateToken(): any {
     yield [
-        takeEvery(SET_TOKEN, updateToken(storageService)),
-        takeEvery(DELETE_TOKEN, updateToken(storageService)),
+        takeEvery(SET_TOKEN, setToken(storageService)),
+        takeEvery(DELETE_TOKEN, deleteToken(storageService)),
         takeEvery(START_COUNTDOWN_TIMER, startCountdownTimer),
     ];
+};
+
+export const setToken = (storageService: IStorageService) => function* _setToken(action: any): any {
+    const { id, saveToStorage } = action.payload;
+    const token: ITokenObject = action.payload.token;
+    if (saveToStorage) {
+        const tokens = yield select(jwtSelector);
+        yield call(storageService.setToken, tokens);
+    }
+    const { last_updated, expires_in } = token;
+    const currentTimestamp = new Date().valueOf();
+    const timeLeft = (last_updated + expires_in * 1000 - currentTimestamp);
+    yield put(actions(id).startCountdownTimer(timeLeft));
+};
+
+export const deleteToken = (storageService: IStorageService) => function* _updateToken(action: any): any {
+    const { id, deleteFromStorage } = action.payload;
+    const tokens = yield select(jwtSelector);
+    if (deleteFromStorage) {
+        yield call(storageService.setToken, tokens);
+    }
+    yield put(actions(id).cancelCountdownTimer());
 };
 
 export function* startCountdownTimer(action): any {

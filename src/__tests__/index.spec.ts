@@ -1,5 +1,5 @@
 import { IStorageService } from "../interface";
-import root, { initialize, updateToken, listenAction, startCountdownTimer, countdownTimer, cancelCountdownTimer } from "../";
+import root, { initialize, listenAction, startCountdownTimer, countdownTimer, cancelCountdownTimer } from "../";
 import { takeEvery, ForkEffect, put, call, select, race, take } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import createAction, { START_COUNTDOWN_TIMER, SET_TOKEN, DELETE_TOKEN, CANCEL_COUNTDOWN_TIMER } from "../actions";
@@ -40,7 +40,7 @@ describe("Sagas", () => {
             expect(gen.next().value).toEqual(call(mockStorageInstance.getToken));
             expect(gen.next(mockToken).value).toEqual(
                 put(createAction("validToken").setToken(
-                    { token_type: "Bearer", access_token: "abcd", refresh_token: "1234", expires_in: 3600, last_updated: 1500000000000 },
+                    { token_type: "Bearer", access_token: "abcd", refresh_token: "1234", expires_in: 3600, last_updated: 1500000000000 }, false,
                 )),
             );
 
@@ -53,25 +53,25 @@ describe("Sagas", () => {
         });
     });
 
-    describe("updateToken", () => {
-        it("should set token and start timer", () => {
-            const mockStorageInstance = new MockStorage();
-            const gen: any = updateToken(mockStorageInstance)(createAction("validToken").setToken(mockToken.validToken));
-            expect(gen.next().value).toEqual(select(jwtSelector));
-            expect(gen.next(mockToken.validToken).value).toEqual(call(mockStorageInstance.setToken, mockToken.validToken));
-            expect(gen.next().value).toEqual(put(createAction("validToken").startCountdownTimer(mockToken.validToken.expires_in)));
-            expect(gen.next()).toEqual({ done: true, value: undefined });
-        });
+    // describe("updateToken", () => {
+    //     it("should set token and start timer", () => {
+    //         const mockStorageInstance = new MockStorage();
+    //         const gen: any = updateToken(mockStorageInstance)(createAction("validToken").setToken(mockToken.validToken));
+    //         expect(gen.next().value).toEqual(select(jwtSelector));
+    //         expect(gen.next(mockToken.validToken).value).toEqual(call(mockStorageInstance.setToken, mockToken.validToken));
+    //         expect(gen.next().value).toEqual(put(createAction("validToken").startCountdownTimer(mockToken.validToken.expires_in)));
+    //         expect(gen.next()).toEqual({ done: true, value: undefined });
+    //     });
 
-        it("should set token and stop timer", () => {
-            const mockStorageInstance = new MockStorage();
-            const gen: any = updateToken(mockStorageInstance)(createAction("validToken").deleteToken());
-            expect(gen.next().value).toEqual(select(jwtSelector));
-            expect(gen.next(mockToken.validToken).value).toEqual(call(mockStorageInstance.setToken, mockToken.validToken));
-            expect(gen.next().value).toEqual(put(createAction("validToken").cancelCountdownTimer()));
-            expect(gen.next()).toEqual({ done: true, value: undefined });
-        });
-    });
+    //     it("should set token and stop timer", () => {
+    //         const mockStorageInstance = new MockStorage();
+    //         const gen: any = updateToken(mockStorageInstance)(createAction("validToken").deleteToken());
+    //         expect(gen.next().value).toEqual(select(jwtSelector));
+    //         expect(gen.next(mockToken.validToken).value).toEqual(call(mockStorageInstance.setToken, mockToken.validToken));
+    //         expect(gen.next().value).toEqual(put(createAction("validToken").cancelCountdownTimer()));
+    //         expect(gen.next()).toEqual({ done: true, value: undefined });
+    //     });
+    // });
 
     describe("listenAction", () => {
         const mockStorageInstance = new MockStorage();

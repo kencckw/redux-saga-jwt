@@ -5,14 +5,14 @@ describe("Actions", () => {
         it("should return the correct action object", () => {
             expect(createAction("test")
                 .setToken(null))
-                .toEqual({ type: SET_TOKEN, payload: { id: "test", token: null } });
+                .toEqual({ type: SET_TOKEN, payload: { id: "test", token: null, saveToStorage: true } });
         });
     });
     describe("deleteToken", () => {
         it("should return the correct action object", () => {
             expect(createAction("test")
                 .deleteToken())
-                .toEqual({ type: DELETE_TOKEN, payload: { id: "test" } });
+                .toEqual({ type: DELETE_TOKEN, payload: { id: "test", deleteFromStorage: true } });
         });
     });
     describe("onTokenExpired", () => {
