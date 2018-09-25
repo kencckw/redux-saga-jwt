@@ -1,7 +1,6 @@
 import { delay } from "redux-saga";
 import { put, takeEvery, all } from "redux-saga/effects";
-import { ITokenObject } from "../../src/interface";
-import { EXPIRED } from "../../src/actions";
+import { EXPIRED, ITokenObject } from "redux-saga-jwt";
 import { myAppActions } from "./jwt";
 
 const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -12,12 +11,6 @@ const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
 const REFRESH_REQUEST = "REFRESH_REQUEST";
 const REFRESH_SUCCESS = "REFRESH_SUCCESS";
-
-const token = {
-    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZ1Y2sgeW91ISIsImlhdCI6MTUxNjIzOTAyMn0.jGAvnDWWhboe6Lc7hQ4p7S4dtGK4yzXFnUQfe9dHyTM",
-    refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZ1Y2sgeW91ISEiLCJpYXQiOjE1MTYyMzkwMjJ9.OxLRJwls7qRTT-CDt9eIMvNgLdyfHqJ7d-smYddAHfs",
-    expiresIn: 5000,
-};
 
 const getToken = () => ({
     accessToken: Math.random().toString(36).substring(2),

@@ -19,4 +19,10 @@ export const createJWT = <S>(configs?: Partial<IJWTConfig<S>>) => {
     };
 };
 
+export {
+    ITokenObject,
+    IJWTConfig,
+    IJWTState,
+} from "./interface";
+
 export default createJWT;

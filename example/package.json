@@ -2,7 +2,7 @@
   "name": "redux-saga-jwt-example",
   "version": "0.0.1",
   "description": "An example of redux-saga-jwt",
-  "main": "index.js",
+  "main": "src/index.tsx",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --port 9000 --open --hot --inline --content-base src"
   },
