@@ -1,6 +1,6 @@
 {
     "name": "redux-saga-jwt",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Token management for single page application",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
