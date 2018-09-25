@@ -13,108 +13,95 @@
 
 ## Setup
 ```typescript
-import { combineReducers } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { fork } from "redux-saga/effects";
-import jwtSaga from "redux-saga-jwt";
-import jwtReducer from "redux-saga-jwt/reducer";
+import { createJWT, createActionCreators } from "redux-saga-jwt";
+
+const jwt = createJWT();
+
+export const myAppSelector = jwt.createSelectors("myApp");
+export const myAppActions = createActionCreators("myApp");
 
 const rootReducer = combineReducers({
-  reduxSagaJwt: reducer,
+  jwt: jwt.reducer,
 })
 
-const middleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware();
 
-function* rootSaga() {
-  yield [
-    fork(jwtSaga())
-  ];
-}
-
-middleware.run(rootSaga)
+sagaMiddleware.run(function* () {
+  yield all([
+    jwt.saga,
+  ])
+});
 ```
 
-## Override DefaultStorage
-```typescript
-import { IStorageService } from "redux-saga-jwt/interface"; 
-class MyStorage implements IStorageService {
-    public setToken(token) {
-        localStorage.setItem("token", JSON.stringify(token));
-    }
-
-    public getToken(): Interfaces.ITokenObject {
-        const token: any = localStorage.getItem("token");
-        return JSON.parse(token);
-    }
-}
-
-function* rootSaga() {
-  yield [
-    fork(jwtSaga(new MyStorage())) // pass your storage instance into jwtSaga
-  ];
-}
+## Example
+```
+git clone https://github.com/kencckw/redux-saga-jwt.git && cd example && npm i && npm start
 ```
 
 ## Usage
 1. Set token after login 
 ```typescript
-import createAction from "redux-saga-jwt/actions";
-import { put, call, takeEvery } from "redux-saga/effects";
-const siteOneAction = createAction("siteOne");
-
-function* loginSaga() {
-    // const tokenObject = yield call(yourLoginApi, username, password)
-    const tokenObject = {
-        token_type: "Bearer";
-        access_token: "abc";
-        refresh_token: "def";
-        expires_in: 3600; // unit: second
-        last_updated: new Date().valueOf(); // timestamp
-    };
-    yield put(siteOneAction.setToken(tokenObject));
+function* loginSaga(action) {
+    const {username, password} = action.payload;
+    const tokenObject: ITokenObject = yield call(yourLoginApi, username, password)
+    yield put(myAppActions.set(tokenObject));
 }
 ```
-2. Listen to ON_TOKEN_EXPIRED action and refresh your token.  
-> Redux-saga-jwt will load the token from StorageService and check the token status on application start.
+2. Listen EXPIRED and refresh your token.
+> Redux-saga-jwt will load the token and check the token status on application start.
 ```typescript
-import createAction, { ON_TOKEN_EXPIRED } from "redux-saga-jwt/actions";
-import { put, call, takeEvery } from "redux-saga/effects";
-const siteOneAction = createAction("siteOne");
+import { EXPIRED } from "redux-saga-jwt";
 
 function* refreshTokenListener() {
-  yield takeEvery(ON_TOKEN_EXPIRED, refreshToken);
+    yield takeEvery(EXPIRED, refreshSaga);
 }
-function* refreshToken(action) {
-    const { id, token } = action.payload; // id="siteOne", access_token="abc", refresh_token="def"
-    // const newToken = yield call(yourRefreshTokenApi, token.refresh_token)
-    // if (newToken === null) { // if refresh token failure, force user to login again.
-    //    yield put(yourRequestLoginAction);
-    //    return;
-    // }
-    const newToken = {
-        token_type: "Bearer";
-        access_token: "123";
-        refresh_token: "456";
-        expires_in: 3600;
-        last_updated: new Date().valueOf(); // timestamp
-    };
-    yield put(siteOneAction.setToken(newToken));
-}
-```
-3. Delete your token when log out
-```typescript
-import createAction from "redux-saga-jwt/actions";
-const siteOneAction = createAction("siteOne");
-yield put(siteOneAction.deleteToken());
-```
-4. Use isTokenExpired to check your token status
-```typescript
-import createSelector from "redux-saga-jwt/selectors";
-const siteOneSelector = createSelector("siteOne");
 
+function* refreshToken(action) {
+    const {id} = action.payload;
+    const tokenObject = yield select(myAppSelector);
+    const newToken = yield call(yourRefreshApi, tokenObject.refreshToken);
+    yield put(myAppActions.set(newToken));
+}
+```
+3. Remove your token when user logs out
+```typescript
+function* loginSaga(action) {
+    const {username, password} = action.payload;
+    const tokenObject: ITokenObject = yield call(yourLoginApi, username, password)
+    yield put(myAppActions.set(tokenObject));
+}
+```
+4. Selectors
+> If token is null, isTokenExpired will return true
+```typescript
 function mapStateToProps(state) {
     return {
-        isAuthenticated: siteOneSelector.isTokenExpired(state),
+        token: myAppSelector.getToken(state),
+        isAuthenticated: !myAppSelector.isTokenExpired(state),
     };
 }
+```
+
+## Advance usage
+
+By overriding the default config of redux-saga-jwt, you can customize your state location or implement your own storage logic.
+
+```typescript
+interface IJWTConfig<S> {
+    setTokens: (tokens: IJWTState) => any;
+    getTokens: () => IJWTState;
+    stateSelector?: (state: S) => IJWTState;
+}
+
+const defaultConfigs: IJWTConfig<any> = {
+    getTokens: () => JSON.parse(localStorage.getItem("jwt")),
+    setTokens: tokens => localStorage.setItem("jwt", JSON.stringify(tokens)),
+    stateSelector: state => state.jwt,
+};
+```
+
+```typescript
+import { createJWT, createActionCreators } from "redux-saga-jwt";
+
+const jwt = createJWT(yourConfigs);
 ```
