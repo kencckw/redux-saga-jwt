@@ -1,6 +1,6 @@
 import { createSelectors } from "./selectors";
 import { createReducer } from "./reducer";
-import { IJWTConfig } from "./interface";
+import { IJWTConfig, ITokenObject, IJWTState } from "./interface";
 import { defaultConfigs } from "./defaultConfigs";
 import { createRootSaga } from "./sagas";
 
@@ -19,10 +19,8 @@ export const createJWT = <S>(configs?: Partial<IJWTConfig<S>>) => {
     };
 };
 
-export {
-    ITokenObject,
-    IJWTConfig,
-    IJWTState,
-} from "./interface";
+export type IJWTConfig<S> = IJWTConfig<S>;
+export type ITokenObject = ITokenObject;
+export type IJWTState = IJWTState;
 
 export default createJWT;
