@@ -1,6 +1,7 @@
 !dist
 coverage
 src
+example
 test
 circle.yml
 tsconfig.json

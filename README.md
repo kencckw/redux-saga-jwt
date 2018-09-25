@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/github/license/kencckw/redux-saga-jwt.svg)](https://github.com/kencckw/redux-saga-jwt/blob/master/LICENSE.md)
 
 ## Features
-1. Multiple token manangement
+1. Multiple token management
 2. Support Typescript
 
 ## Installation

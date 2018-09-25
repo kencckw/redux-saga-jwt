@@ -1,19 +1,15 @@
-import { ITokenObject } from "./interface";
+import { ITokenObject, IJWTConfig } from "./interface";
+import { isTokenExpired } from "./utils";
 
-export const jwtSelector = (state: any) => state.reduxSagaJwt;
-
-export default id => ({
-    getTokenObject: (state: any): ITokenObject => jwtSelector(state)[id] || null,
-    isTokenExpired: (state: any): boolean => {
-        const currentTimestamp = new Date().valueOf();
-        const token: ITokenObject = jwtSelector(state)[id];
+export const createSelectors = <S>(configs: IJWTConfig<S>) => (id: string) => ({
+    getToken: (state: S) => (configs.stateSelector(state) || {})[id],
+    isTokenExpired: (state: S): boolean => {
+        const token: ITokenObject = (configs.stateSelector(state) || {})[id];
         if (!token) {
             return true;
         }
-        return isTokenExpired(currentTimestamp, token.last_updated, token.expires_in);
+        return isTokenExpired(token);
     },
 });
 
-export function isTokenExpired(currentTimestamp: number, lastUpdated, expiresIn): boolean {
-    return currentTimestamp >= lastUpdated + expiresIn * 1000;
-}
+export default createSelectors;

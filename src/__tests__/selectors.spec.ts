@@ -1,32 +1,47 @@
-import createSelector from "../selectors";
+import * as utils from "../utils";
+import * as selectors from "../selectors";
 
 describe("Selectors", () => {
-    describe("getTokenObject", () => {
-        it("should return then correct token object", () => {
-            expect(createSelector("test").getTokenObject({ reduxSagaJwt: { test: { token_type: "a" } } })).toEqual({ token_type: "a" });
-            expect(createSelector("test1").getTokenObject({ reduxSagaJwt: { test: { token_type: "a" } } })).toEqual(null);
+    let configs;
+    let selector;
+    beforeEach(() => {
+        configs = {
+            stateSelector: jest.fn(),
+        };
+        selector = selectors.createSelectors(configs)("test");
+    });
+
+    describe("createSelector", () => {
+        it("should create selectors by configs", () => {
+            expect(typeof selectors.createSelectors(null)).toEqual("function");
+            expect(typeof selectors.createSelectors(null)("id").getToken).toEqual("function");
+            expect(typeof selectors.createSelectors(null)("id").isTokenExpired).toEqual("function");
+        });
+    });
+
+    describe("getToken", () => {
+        it("should return correct token", () => {
+            configs.stateSelector.mockReturnValue({test: "token object"});
+            expect(selector.getToken(null)).toEqual("token object");
+        });
+
+        it("should return undefined if tokenObject is null", () => {
+            configs.stateSelector.mockReturnValue(undefined);
+            expect(selector.getToken(null)).toEqual(undefined);
         });
     });
 
     describe("isTokenExpired", () => {
-        it("should return then correct value", () => {
-            const mockNow = new Date(1500000000000);
-            global.Date = jest.fn(() => mockNow) as any;
-            expect(createSelector("test").isTokenExpired({
-                reduxSagaJwt: {
-                    test:
-                    { token_type: "Bearer", access_token: "abcd", refresh_token: "1234", expires_in: 3600, last_updated: 1500000000000 },
-                },
-            })).toEqual(false);
-            expect(createSelector("test").isTokenExpired({
-                reduxSagaJwt: {
-                    test:
-                    { token_type: "Bearer", access_token: "abcd", refresh_token: "1234", expires_in: 3600, last_updated: 1499996399999 },
-                },
-            })).toEqual(true);
-            expect(createSelector("test").isTokenExpired({
-                reduxSagaJwt: {},
-            })).toEqual(true);
+        it("should return true if token object is null or undefined", () => {
+            expect(selector.isTokenExpired()).toEqual(true);
+        });
+
+        it("should return the result from isTokenExpired if token is not null", () => {
+            configs.stateSelector.mockReturnValue({test: "token object"});
+            const mockIsTokenExpired = jest.spyOn(utils, "isTokenExpired").mockReturnValue(true);
+            expect(selector.isTokenExpired()).toEqual(true);
+            expect(mockIsTokenExpired).toHaveBeenCalledTimes(1);
+            expect(mockIsTokenExpired).toHaveBeenCalledWith("token object");
         });
     });
 });

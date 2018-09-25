@@ -1,19 +1,19 @@
-import { SET_TOKEN, DELETE_TOKEN } from "./actions";
-import * as omit from "lodash/omit";
+import { SET, REMOVE } from "./actions";
+import { IJWTConfig, IJWTState } from "./interface";
 
-export default (state = {}, action) => {
-    switch (action.type) {
-        case SET_TOKEN:
+export const createReducer = <S>(configs: IJWTConfig<S>) => {
+    const initialState = configs.getTokens();
+    return (state: IJWTState = initialState , action) => {
+        const {type, payload} = action;
+        if (type === SET) {
             return {
                 ...state,
-                [action.payload.id]: {
-                    ...action.payload.token,
-                },
+                [payload.id]: payload.token,
             };
-        case DELETE_TOKEN:
-            return {
-                ...omit(state, action.payload.id),
-            };
-    }
-    return state;
+        } else if (type === REMOVE) {
+            const { [payload.id]: value, ...newState} = state;
+            return newState;
+        }
+        return state;
+    };
 };

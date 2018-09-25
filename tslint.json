@@ -6,13 +6,6 @@
     ],
     "jsRules": {},
     "rules": {
-        "ordered-imports": [
-            true,
-            {
-                "import-sources-order": "any",
-                "named-imports-order": "case-insensitive"
-            }
-        ],
         "no-var-requires": false,
         "jsx-no-multiline-js": false,
         "jsx-alignment": false,

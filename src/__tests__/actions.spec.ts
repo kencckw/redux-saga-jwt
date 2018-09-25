@@ -1,40 +1,50 @@
-import createAction, { SET_TOKEN, DELETE_TOKEN, START_COUNTDOWN_TIMER, CANCEL_COUNTDOWN_TIMER, ON_TOKEN_EXPIRED } from "../actions";
+import { createActionCreators,  SET, REMOVE, EXPIRED } from "../actions";
 
 describe("Actions", () => {
-    describe("setToken", () => {
-        it("should return the correct action object", () => {
-            expect(createAction("test")
-                .setToken(null))
-                .toEqual({ type: SET_TOKEN, payload: { id: "test", token: null, saveToStorage: true } });
-        });
+    const id = "test";
+    const actionCreators = createActionCreators(id);
+
+    it("should create action creators", () => {
+        expect(typeof actionCreators.set).toEqual("function");
+        expect(typeof actionCreators.remove).toEqual("function");
+        expect(typeof actionCreators.expired).toEqual("function");
     });
-    describe("deleteToken", () => {
-        it("should return the correct action object", () => {
-            expect(createAction("test")
-                .deleteToken())
-                .toEqual({ type: DELETE_TOKEN, payload: { id: "test", deleteFromStorage: true } });
-        });
-    });
-    describe("onTokenExpired", () => {
-        it("should return the correct action object", () => {
-            expect(createAction("test")
-                .onTokenExpired(null))
-                .toEqual({ type: ON_TOKEN_EXPIRED, payload: { id: "test", token: null } });
-        });
-    });
-    describe("onTokenExpired", () => {
-        it("should return the correct action object", () => {
-            expect(createAction("test")
-                .startCountdownTimer(3600))
-                .toEqual({ type: START_COUNTDOWN_TIMER, payload: { id: "test", expiresIn: 3600 } });
+
+    it("should should create an action to set token", () => {
+        const token = {
+            accessToken: "accessToken",
+            refreshToken: "refreshToken",
+            expiresIn: 1,
+            createdAt: 2,
+        };
+        const action = actionCreators.set(token);
+        expect(action).toEqual({
+            type: SET,
+            payload: {
+                id,
+                token,
+            },
         });
     });
 
-    describe("onTokenExpired", () => {
-        it("should return the correct action object", () => {
-            expect(createAction("test")
-                .cancelCountdownTimer())
-                .toEqual({ type: CANCEL_COUNTDOWN_TIMER, payload: { id: "test" } });
+    it("should should create an action to remove token", () => {
+        const action = actionCreators.remove();
+        expect(action).toEqual({
+            type: REMOVE,
+            payload: {
+                id,
+            },
         });
     });
+
+    it("should should create an action to expire token", () => {
+        const action = actionCreators.expired();
+        expect(action).toEqual({
+            type: EXPIRED,
+            payload: {
+                id,
+            },
+        });
+    });
+
 });

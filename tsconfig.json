@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "noUnusedLocals": true,
-        "outDir": "dist",
-        "sourceMap": true,
+        "outDir": "dist/dist",
+        "sourceMap": false,
         "target": "es5",
         "jsx": "react",
         "module": "commonjs",
@@ -22,6 +22,7 @@
     },
     "exclude": [
         "dist",
+        "example",
         "node_modules/**/*",
         "**/__tests__/*"
     ]
