@@ -12,6 +12,11 @@ describe("Default config", () => {
             localStorage.setItem("jwt", JSON.stringify({test: "123"}));
             expect(defaultConfigs.getTokens()).toEqual({test: "123"});
         });
+
+        it("should not throw error if localStorage is undefined", () => {
+            localStorage.removeItem("jwt");
+            expect(defaultConfigs.getTokens()).toEqual(null);
+        });
     });
 
     describe("setToken", () => {
