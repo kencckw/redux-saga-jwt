@@ -1,12 +1,11 @@
 import { IJWTConfig, IJWTState } from "./interface";
 import { SET, REMOVE, createActionCreators } from "./actions";
-import { spawn, all, race, take, select, call, put, takeEvery } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { spawn, all, race, take, select, call, put, takeEvery, delay } from "redux-saga/effects";
 import { isTokenExpired } from "./utils";
 
 export function* timer(id: string, ms: number) {
     const { timeout } = yield race({
-        timeout: call(delay, ms),
+        timeout: delay(ms),
         cancel: call(takeRemove, id),
     });
 

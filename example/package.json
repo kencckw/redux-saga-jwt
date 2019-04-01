@@ -1,34 +1,28 @@
 {
   "name": "redux-saga-jwt-example",
-  "version": "0.0.1",
-  "description": "An example of redux-saga-jwt",
-  "main": "src/index.tsx",
-  "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --port 9000 --open --hot --inline --content-base src"
-  },
-  "engines": {
-    "node": ">=v8.9.0"
-  },
-  "author": "Ken Cheng",
-  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@types/react": "^16.4.14",
-    "@types/react-dom": "^16.0.7",
-    "@types/react-redux": "^6.0.9",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0",
-    "redux-saga": "^0.16.0",
-    "redux-saga-jwt": "^1.0.3",
-    "style-loader": "^0.23.0"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^6.0.1",
+    "react-scripts": "2.1.8",
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.2"
   },
-  "devDependencies": {
-    "awesome-typescript-loader": "^3.4.1",
-    "css-loader": "^1.0.0",
-    "source-map-loader": "^0.2.3",
-    "typescript": "^3.0.3",
-    "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.2"
-  }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

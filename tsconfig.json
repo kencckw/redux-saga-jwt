@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "skipLibCheck": true,
         "noUnusedLocals": true,
         "outDir": "dist/dist",
         "sourceMap": false,

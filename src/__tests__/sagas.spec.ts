@@ -1,8 +1,7 @@
 import * as actions from "../actions";
 import * as sagas from "../sagas";
 import * as utils from "../utils";
-import { call, race, put, take, select, all, spawn, takeEvery } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { call, race, put, take, select, all, spawn, takeEvery, delay } from "redux-saga/effects";
 
 describe("Sagas", () => {
 
@@ -14,7 +13,7 @@ describe("Sagas", () => {
         it("should not call expired when timer is cancelled", () => {
             const gen = sagas.timer("test", 1000);
             expect(gen.next().value).toEqual(race({
-                timeout: call(delay, 1000),
+                timeout: delay(1000),
                 cancel: call(sagas.takeRemove, "test"),
             }));
 
@@ -29,7 +28,7 @@ describe("Sagas", () => {
             });
             const gen = sagas.timer("test", 1000);
             expect(gen.next().value).toEqual(race({
-                timeout: call(delay, 1000),
+                timeout: delay(1000),
                 cancel: call(sagas.takeRemove, "test"),
             }));
 
