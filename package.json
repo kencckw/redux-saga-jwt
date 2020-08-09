@@ -49,10 +49,6 @@
   "engines": {
     "node": ">=8.9"
   },
-  "dependencies": {
-    "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.19"
-  },
   "devDependencies": {
     "@types/node": "^10.10.1",
     "@types/react-dom": "^16.8.3",
