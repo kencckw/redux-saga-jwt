@@ -13,96 +13,93 @@
 
 ## Setup
 ```typescript
-import { createJWT, createActionCreators } from "redux-saga-jwt";
+import {
+  createActionCreators,
+  createJWT,
+  JWTState,
+  remove,
+  set,
+  TokenObject
+} from 'redux-saga-jwt'
 
-const jwt = createJWT();
+const jwt = createJWT({
+  *setTokens(state) {
+    yield Storage.setToken(state);
+  },
+  *getTokens() {
+    return (yield Storage.getToken()) as JWTState;
+  },
+  *refreshToken(id, token) {
+    const newToken = yield LoginService.refresh(token.refreshToken!);
+    yield put(set(id, newToken as TokenObject))
+  },
+})
 
-export const myAppSelector = jwt.createSelectors("myApp");
-export const myAppActions = createActionCreators("myApp");
+const selectors = jwt.createSelectors('main')
+const actionCreators = createActionCreators('main')
 
 const rootReducer = combineReducers({
   jwt: jwt.reducer,
 })
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware()
 
 sagaMiddleware.run(function* () {
   yield all([
     jwt.saga,
   ])
-});
+})
 ```
 
 ## Example
-```
-git clone https://github.com/kencckw/redux-saga-jwt.git && cd example && npm i && npm start
-```
+TODO: upload to codesandbox
 
 ## Usage
 1. Set token after login 
 ```typescript
-function* loginSaga(action) {
-    const {username, password} = action.payload;
-    const tokenObject: ITokenObject = yield call(yourLoginApi, username, password)
-    yield put(myAppActions.set(tokenObject));
+const login = async () => {
+    const token = await LoginService.login();
+    dispatch(actionCreators.set(token))
 }
 ```
-2. Listen EXPIRED and refresh your token.
-> Redux-saga-jwt will load the token and check the token status on application start.
+2. Remove your token when user logs out
 ```typescript
-import { EXPIRED } from "redux-saga-jwt";
-
-function* refreshTokenListener() {
-    yield takeEvery(EXPIRED, refreshSaga);
-}
-
-function* refreshToken(action) {
-    const {id} = action.payload;
-    const tokenObject = yield select(myAppSelector);
-    const newToken = yield call(yourRefreshApi, tokenObject.refreshToken);
-    yield put(myAppActions.set(newToken));
+const logout = async () => {
+    await LoginService.login();
+    dispatch(actionCreators.remove())
 }
 ```
-3. Remove your token when user logs out
-```typescript
 
-function* logoutSaga() {
-    yield put(myAppActions.remove());
-    yield call(yourLogoutApi);
-}
-
-```
 4. Selectors
 > If token is null, isTokenExpired will return true
 ```typescript
-function mapStateToProps(state) {
-    return {
-        token: myAppSelector.getToken(state),
-        isAuthenticated: !myAppSelector.isTokenExpired(state),
-    };
-}
+import {useSelector} from 'react-redux'
+
+const isInitialized = useSelector(selectors.isInitialized)
+const isAuthenticated = useSelector(selectors.isAuthenticated)
 ```
 
-## Advance usage
+## FAQ
 
-By overriding the default config of redux-saga-jwt, you can customize your state location or implement your own storage logic.
+### What should I do if I don't need to refresh token? 
 
+1. Set `refreshInterval` to -1 in your token object
 ```typescript
-interface IJWTConfig<S> {
-    setTokens: (tokens: IJWTState) => any;
-    getTokens: () => IJWTState;
-    stateSelector?: (state: S) => IJWTState;
-}
+import {createActionCreators, useDispatch} from "react-redux";
 
-const defaultConfigs: IJWTConfig<any> = {
-    getTokens: () => JSON.parse(localStorage.getItem("jwt") || null),
-    setTokens: tokens => localStorage.setItem("jwt", JSON.stringify(tokens)),
-    stateSelector: state => state.jwt,
-};
+const actionCreators = createActionCreators('main')
+
+const dispatch = useDispatch();
+
+dispatch(actionCreators.set({
+    ...(YOUR_TOKEN),
+    refreshInterval: -1
+}))
 ```
 
-```typescript
-import { createJWT, createActionCreators } from "redux-saga-jwt";
+2. 
 
-const jwt = createJWT(yourConfigs);
-```
+##### My refresh token never expired, what should I do?
+
+
+##### 

@@ -1,23 +1,33 @@
 {
-  "name": "redux-saga-jwt-example",
-  "version": "0.1.0",
-  "private": true,
+  "name": "redux-saga-jwt-examples",
+  "version": "1.0.0",
+  "description": "React and TypeScript example starter project",
+  "keywords": [
+    "typescript",
+    "react",
+    "starter"
+  ],
+  "main": "src/index.tsx",
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-redux": "^6.0.1",
-    "react-scripts": "2.1.8",
-    "redux": "^4.0.1",
-    "redux-saga": "^1.0.2"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "latest",
+    "react-scripts": "latest",
+    "redux": "latest",
+    "redux-saga": "latest",
+    "redux-saga-jwt": "latest"
+  },
+  "devDependencies": {
+    "@types/react-redux": "^7.1.9",
+    "@types/react": "16.9.19",
+    "@types/react-dom": "16.9.5",
+    "typescript": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",

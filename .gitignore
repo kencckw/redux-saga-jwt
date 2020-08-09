@@ -1,18 +1,12 @@
 node_modules
-dist
 build
-coverage
+test
+src/**.js
+.idea
 .vscode
 
-# log files
-*ncp-debug.log*
-*npm-debug.log*
+coverage
+.nyc_output
+*.log
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+yarn.lock

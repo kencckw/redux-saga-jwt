@@ -1,34 +1,32 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended",
-        "tslint-react"
+  "extends": ["tslint:latest", "tslint-config-prettier"],
+  "rules": {
+    "interface-name": [true, "never-prefix"],
+    "no-implicit-dependencies": [true, "dev"],
+    "no-submodule-imports": false,
+    "no-object-literal-type-assertion": false,
+    /* tslint-immutable rules */
+    // Recommended built-in rules
+    "no-var-keyword": true,
+    "no-parameter-reassignment": true,
+    "typedef": false,
+    // Immutability rules
+    "readonly-keyword": true,
+    "readonly-array": true,
+    "no-let": true,
+    "no-object-mutation": true,
+    "no-delete": true,
+    "no-method-signature": true,
+
+    // Functional style rules
+    "no-this": true,
+    "no-class": true,
+    "no-mixed-interface": true,
+    "no-expression-statement": [
+      true,
+      { "ignore-prefix": ["console.", "process.exit"] }
     ],
-    "jsRules": {},
-    "rules": {
-        "no-var-requires": false,
-        "jsx-no-multiline-js": false,
-        "jsx-alignment": false,
-        "jsx-no-lambda": false,
-        "jsx-wrap-multiline": false,
-        "jsx-no-bind": false,
-        "object-literal-sort-keys": false,
-        "max-line-length": [
-            false
-        ],
-        "no-console": [
-            false
-        ],
-        "no-empty": false,
-        "no-unused-expression": false,
-        "ordered-imports": [
-            false
-        ],
-        "jsx-boolean-value": false,
-        "arrow-parens": [
-            true,
-            "ban-single-arg-parens"
-        ]
-    },
-    "rulesDirectory": []
+    "no-if-statement": true
+    /* end tslint-immutable rules */
+  }
 }
