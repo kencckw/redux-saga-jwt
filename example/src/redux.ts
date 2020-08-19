@@ -1,16 +1,9 @@
-import {applyMiddleware, combineReducers, compose, createStore} from "redux";
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga'
-import {
-  createActionCreators,
-  createJWT,
-  JWTState,
-  remove,
-  set,
-  TokenObject
-} from 'redux-saga-jwt'
-import {all, put, spawn} from 'redux-saga/effects';
-import {LoginService} from "./api";
-import {Storage} from "./storage";
+import { createActionCreators, createJWT, JWTState } from 'redux-saga-jwt'
+import { all, spawn } from 'redux-saga/effects';
+import { LoginService } from './api';
+import { Storage } from './storage';
 
 export const jwt = createJWT({
   *setTokens(state) {
@@ -20,11 +13,7 @@ export const jwt = createJWT({
     return (yield Storage.getToken()) as JWTState;
   },
   *refreshToken(id, token) {
-    const newToken = yield LoginService.refresh(token.refreshToken!);
-    yield put(set(id, newToken as TokenObject))
-  },
-  *tokenExpired(id) {
-    yield put(remove(id))
+    return yield LoginService.refresh(token.refreshToken!);
   },
 })
 

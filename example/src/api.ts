@@ -8,7 +8,6 @@ const createToken = (): TokenObject => {
     accessToken: `accessToken-${count}`,
     refreshInterval: 5000, // in ms
     refreshToken: `refreshToken-${count}`,
-    expiresOn: new Date().valueOf() / 1000 + 30, // in second
   }
 }
 

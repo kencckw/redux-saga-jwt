@@ -1,17 +1,17 @@
 import {
+  all,
   call,
   cancel,
   delay,
   fork,
   put,
-  race,
   select,
   take,
   takeLatest
 } from 'redux-saga/effects';
 
 import { JWTConfigs, JWTState, TokenObject } from '../types';
-import { INITIALIZE, initialize, REMOVE, SET } from './actions';
+import { INITIALIZE, initialize, remove, REMOVE, set, SET } from './actions';
 import { createSelectors } from './selectors';
 
 const isTokenChanged = action =>
@@ -53,14 +53,12 @@ export const createSaga = <S, T extends TokenObject>(
       for (const id of added) {
         currentWorkers[id] = {
           timer: yield fork(refreshIntervalTimer, id),
-          worker: yield fork(refreshTokenWorker, id)
         };
       }
 
       for (const id of removed) {
         if (currentWorkers[id]) {
           yield cancel(currentWorkers[id].timer);
-          yield cancel(currentWorkers[id].worker);
         }
       }
     }
@@ -77,46 +75,49 @@ export const createSaga = <S, T extends TokenObject>(
       }
 
       yield delay(token.refreshInterval);
+
       token = yield select(getToken);
-      yield call(configs.refreshToken, id, token);
-    }
-  };
-
-  const refreshTokenWorker = function*(id: string) {
-    const { getToken } = createSelectors(configs)(id);
-
-    while (true) {
-      const token = yield select(getToken);
-
-      if (!token || token.expiresOn <= 0) {
-        yield take(isTokenChanged);
-        continue;
-      }
-
-      const { tokenExpired } = yield race({
-        tokenChanged: take(isTokenChanged),
-        tokenExpired: delay(
-          token.expiresOn * 1000 - new Date().valueOf()
-        )
-      });
-
-      if (tokenExpired) {
-        yield call(configs.tokenExpired, id, token);
-        return;
+      const newToken = yield call(configs.refreshToken, id, token);
+      if (newToken) {
+        yield put(set(id, newToken))
+      } else {
+        yield remove(id)
       }
     }
   };
+
+  const refreshToken = function* (id, token) {
+    return {
+      id,
+      token: yield call(configs.refreshToken, id, token)
+    }
+  }
+
+  const init = function*() {
+    const state = yield call(configs.getTokens) || {};
+
+    const newTokens = yield all(Object.keys(state).map(id => {
+      return call(refreshToken, id, state[id])
+    }));
+
+    const newState = newTokens.reduce((acc, curr) => {
+      return {
+        ...acc,
+        [curr.id]: curr.token,
+      }
+    }, state)
+
+    yield put(initialize(newState));
+  }
 
   const rootSaga = function*() {
     yield fork(tokenWorker);
-    const state = yield call(configs.getTokens);
-    yield put(initialize(state));
+    yield call(init);
     yield takeLatest(isTokenChanged, saveTokens);
   };
 
   return {
     refreshIntervalTimer,
-    refreshTokenWorker,
     rootSaga,
     saveTokens,
     tokenWorker
